@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Hello, WebXR! - A-Frame</title>
+      <meta name="description" content="Hello, WebVR! - A-Frame">
+      <!--  note we are using 1.1.0 as most recent -->
+      <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+      <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    </head>
+    <body>
+      <!-- use CTRL ALT i to use A-frame debugger -->
+      <a-scene>
+        <!-- A frame uses an asset system to try and cache assets so we dont have to download-->
+        <a-assets timeout="10000">
+            <!--sound digetic vs non digetic-->
+            <audio id="space_music" src="assets/SpaceMusic.mp3" preload="auto" crossorigin = "anonymous"></audio>
+            <!--this is a spherical earth texture -->
+            <img id = "Earth_map" src = "assets/2k_earth_daymap.jpg" crossorigin = "anonymous">
+            <!-- image textures for planes-->
+            <img id="earth_img" src="assets/Earth.jpg" crossorigin="anonymous">
+            <img id="mars_img" src="assets/MarsSurface.jpg" crossorigin="anonymous">
+
+            <!--gltf is a web optimized 3D format. GLB is a binary form single file and 
+            GLTF is a folder of connected files. eg. textures and vertex data
+            response type needs to be array buffer to properly read the .glb format
+            (defaults to JSON)-->
+            <a-asset-item id="mars_model" src="assets/mars.glb" response-type = "arraybuffer"></a-asset-item>
+        </a-assets>
+
+        <a-entity sound="src:#space_music; autoplay:true;"></a-entity>
+
+        <a-entity position="0 1.6 0" camera wasd-controls look-controls>
+            <!-- cursor creates a ray cast interactive ststem, where we cast a ray into the scene and check 
+            for interactions with faces of certain pbjects in that scene
+                - far: ignore all objects further from cursor than here
+                - interval: after how many miliseconds do we check for interaction again 
+                - objects: what css selector do we use for which objects we check
+            -->
+            <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:20; objects:.interactive;"></a-entity>
+            <!--lights-->
+            <a-entity position="0.5 -0.5 0" light="type:spot; intensity:1.4; angle:40; penumbra:0.3; castShadow:true; shadowBias:-0.0005"></a-entity>
+        </a-entity>
+        <!-- Earth Exhibit and Plaque -->
+        <a-entity id = "earth"
+            position = "0 3.5 -6"
+            rotation = "0 0 0"
+            scale = "1 1 1 "
+            geometry = "primitive: sphere; radius: 2;"
+            material = "src: #Earth_map;"
+            shadow="cast:true; receive:true;">
+        </a-entity>
+
+        <a-entity id="earth_plane" position="0 0.5 -4" rotation="-30 0 0" scale="1 1 1">
+            <a-entity position="0.65 0 0.01"
+                geometry="primitive: plane; width: 1.5; height: 1.0;"
+                material="src:#earth_img"
+                shadow="cast:false; receive:true;"></a-entity>
+        
+            <a-entity position="0 0 -0.11"
+                geometry="primitive: box; width: 3.0; height: 1.2; depth: 0.2"
+                material="color: white"
+                shadow="cast:true; receive:true;"></a-entity>
+        
+            <a-entity position="-1.4 0.5 0.01" text="value:Earth;
+                color: black; font: roboto; width: 1.3; anchor:left; baseline:top; wrapCount:12;"></a-entity>
+        
+            <a-entity position="-1.4 0.25 0.01" text="value:Coral reefs are Earth's largest living structure.;
+                color: black; font: roboto; width: 1.25; anchor:left; baseline:top; wrapCount:18;"></a-entity>
+        </a-entity>
+       
+        <!-- Mars Exhibit and Plaque -->
+        <a-entity id = "mars"
+            position = "6 3.5 0"
+            rotation = "0 -90 0"
+            scale = "0.002 0.002 0.002 "
+            gltf-model = "#mars_model"
+            shadow="cast:true; receive:true;">
+        </a-entity>
+        <a-entity id="mars_plane" position="4 0.5 0" rotation="-30 -90 0" scale="1 1 1">
+            <a-entity position="0.65 0 0.01"
+                geometry="primitive: plane; width: 1.5; height: 1.0;"
+                material="src:#mars_img"  shadow="cast:false; receive:true;"></a-entity>
+
+            <a-entity position="0 0 -0.11"
+                geometry="primitive: box; width: 3.0; height: 1.2; depth: 0.2"
+                material="color: white"  shadow="cast:true; receive:true;"></a-entity>
+
+            <a-entity position="-1.4 0.5 0.01" text="value:Mars;
+                color: black; font: roboto; width: 1.25; anchor:left; baseline:top; wrapCount:12;"></a-entity>
+            <a-entity position="-1.4 0.25 0.01" text="value:Mars is the fourth planet from the sun.;
+                color: black; font: roboto; width: 1.25; anchor:left; baseline:top; wrapCount:18;"></a-entity>
+        </a-entity>
+
+        <!--universal button-->
+        <!-- if your want multiple of the same component/attribute, the browser will ignore, BUT..
+        Aframe lets us od it if we add TWO underscores __ to the components with a unique if after. ex animation__mouseenter-->
+        <a-entity id="universial_button">
+            <a-entity class="button interactive" position="0 0.6 0"
+                geometry = "primitive:cylinder; radius: 0.15; height: 0.2;"
+                material = "color:rgb(255,100,100);"
+                animation__mouseenter="property:material.color; type:color; to:rgb(255,0,0); startEvents:mouseenter; dur:200;"
+                animation__mouseleave="property:material.color; type:color; to:rgb(255,100,100); startEvents:mouseleave; dur:200;"
+                animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300;">
+            </a-entity>
+            <a-entity position="0 0.3 0" geometry="primitive:box; width:0.5; depth:0.5; height:0.6;"
+            material="color:white;"></a-entity>
+        </a-entity>
+        
+          <!-- add a room -->
+        <a-entity id = "room" shadow="cast:false; receive:true;">
+            <a-entity class = "ground" position = "0 0.01 0" rotation="-90 0 0" geometry="primitive:plane; width:14; height:14;" material = "color:white"></a-entity>
+            <a-entity class="wall" position="15 8 0" rotation="0 -90 0" geometry="primitive: box; width: 30; height: 3; " material="color: white"></a-entity>
+            <a-entity class="wall" position="-15 8 0" rotation="0 90 0" geometry="primitive: box; width: 30; height: 3; " material="color: white"></a-entity>
+            <a-entity class="wall" position="0 8 15" rotation="0 180 0" geometry="primitive: box; width: 30; height: 3; " material="color: white"></a-entity>
+            <a-entity class="wall" position="0 8 -15" rotation="0 0 0" geometry="primitive: box; width: 30; height: 3; " material="color: white"></a-entity>
+        </a-entity>
+        <!--load in environment-->
+        <a-entity environment="preset:starry"></a-entity>
+      </a-scene>
+    </body>
+</html>
