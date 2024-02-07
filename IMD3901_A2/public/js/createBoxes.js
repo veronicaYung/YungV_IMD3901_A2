@@ -8,7 +8,7 @@ AFRAME.registerComponent('createboxes', {
         CONTEXT_AF.button = document.querySelector('#createBox-button');
         // this.el or (CONTEXT_AF) refers to the element that this components is attached to
         CONTEXT_AF.el.addEventListener('click', function(){
-            console.log('clicked');
+            console.log('clicked create box button');
             
             // Create a new a-entity and set its geometry to box
             let box = document.createElement('a-entity');
@@ -16,6 +16,10 @@ AFRAME.registerComponent('createboxes', {
 
             //add a tag to the boxes created, useful for deleting them
             box.classList.add('createdBox');
+            box.classList.add('interactive');
+
+            // Add the pickup component to the box
+            box.setAttribute('pickup', '');
 
             // Generate random x and z coordinates inside the floor for the box position
             let x = Math.random() * 26-13; // Random number between -26 and 26
