@@ -13,10 +13,12 @@ AFRAME.registerComponent('createboxes', {
             // Create a new a-entity and set its geometry to box
             let box = document.createElement('a-entity');
             box.setAttribute('geometry', 'primitive: box');
+            box.setAttribute('material', 'color: #4CC3D9');
 
             //add a tag to the boxes created, useful for deleting them
             box.classList.add('createdBox');
             box.classList.add('interactive');
+            box.setAttribute('id', 'box');
 
             // Add the pickup component to the box
             box.setAttribute('pickup', '');
@@ -25,8 +27,7 @@ AFRAME.registerComponent('createboxes', {
             let x = Math.random() * 26-13; // Random number between -26 and 26
             let z = Math.random() * 26-13; 
             
-            box.setAttribute('position', `${x} 0 ${z}`);
-            box.setAttribute('material', 'color: red');
+            box.setAttribute('position', `${x} 0.5 ${z}`);
             
             // Add box under a-scene as a child, helpful for deleting them
             document.querySelector('a-scene').appendChild(box);
