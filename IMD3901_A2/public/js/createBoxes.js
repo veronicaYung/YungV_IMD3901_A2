@@ -1,4 +1,3 @@
-
 'use strict';
 AFRAME.registerComponent('createboxes', {
     multiple:false,
@@ -11,9 +10,8 @@ AFRAME.registerComponent('createboxes', {
             console.log('clicked create box button');
             
             // Create a new a-entity and set its geometry to box
-            let box = document.createElement('a-entity');
-            box.setAttribute('geometry', 'primitive: box');
-            box.setAttribute('material', 'color: #4CC3D9');
+            let box = document.createElement('a-box');
+            box.setAttribute('material', 'src: url(assets/hay_bale/textures/Hay_bale_baseColor.png)');
 
             //add a tag to the boxes created, useful for deleting them
             box.classList.add('createdBox');
@@ -32,8 +30,5 @@ AFRAME.registerComponent('createboxes', {
             // Add box under a-scene as a child, helpful for deleting them
             document.querySelector('a-scene').appendChild(box);
         });
-
-
     },
-
 });
