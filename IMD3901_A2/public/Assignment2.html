@@ -1,93 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>Hello, WebXR! - A-Frame</title>
-      <meta name="description" content="Hello, WebVR! - A-Frame">
-      <!--  note we are using 1.1.0 as most recent -->
-      <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-      <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
-      <script src="js/createBoxes.js"></script>  
-      <script src="js/deleteBoxes.js"></script>  
-      <script src="js/pickup.js"></script>  
-      <script src="js/getposition.js"></script>    
-    </head>
-    <body>
-      <!-- use CTRL ALT i to use A-frame debugger -->
-      <a-scene>
-        <!-- A frame uses an asset system to try and cache assets so we dont have to download-->
+<head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    <script src="js/pickup.js"></script> 
+    <script src="js/createBoxes.js"></script>  
+    <script src="js/deleteBoxes.js"></script> 
+    <script src="https://unpkg.com/aframe-extras@^6/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrturck/aframe-joystick/master/joystick.min.js"></script>
+</head>
+<body>
+    <!-- Add joy-stick controls for mobile -->
+    <a-scene joystick>
         <a-assets timeout="10000">
-            <!--sound digetic vs non digetic-->
-            <audio id="space_music" src="assets/SpaceMusic.mp3" preload="auto" crossorigin = "anonymous"></audio>
-            <!--this is a spherical earth texture -->
-            <img id = "Earth_map" src = "assets/2k_earth_daymap.jpg" crossorigin = "anonymous">
-            <!-- image textures for planes-->
-            <img id="earth_img" src="assets/Earth.jpg" crossorigin="anonymous">
-            <img id="mars_img" src="assets/MarsSurface.jpg" crossorigin="anonymous">
+            <audio id="barn_music" src="assets/barn_music.mp3" preload="auto" crossorigin = "anonymous"></audio>
+            <a-asset-item id="crateModel" response-type="arraybuffer"  src="assets/crate/scene.gltf"></a-asset-item>
+            <a-asset-item id="barnModel" response-type="arraybuffer"  src="assets/barn/scene.gltf"></a-asset-item>
+            <video id="buffalo_video" src="assets/buffalo.mp4" autoplay loop crossorigin="anonymous"></video>
+            <audio id="pickupSound" src="assets/ding.mp3"></audio>
 
-            <!--gltf is a web optimized 3D format. GLB is a binary form single file and 
-            GLTF is a folder of connected files. eg. textures and vertex data
-            response type needs to be array buffer to properly read the .glb format
-            (defaults to JSON)-->
-            <a-asset-item id="mars_model" src="assets/mars.glb" response-type = "arraybuffer"></a-asset-item>
         </a-assets>
 
-        <a-entity sound="src:#space_music; autoplay:true;"></a-entity>
+        <!--Music and Video-->
+        <a-entity sound="src:#barn_music; loop: true; autoplay:true;"></a-entity>
+        <a-video src="#buffalo_video" width="16" height="9" position="0 6.779 -10.759"></a-video>
 
-        <a-entity position="0 1.6 0" camera wasd-controls look-controls getposition>
-            <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:20; objects:.interactive;"  getposition></a-entity>
-            <a-box id="attachedBox" position="0 -0.5 -1" rotation="0 45 0" color="#4CC3D9" visible="false"></a-box>
-            <!--lights-->
-            <a-entity position="0.5 -0.5 0" light="type:spot; intensity:1.4; angle:40; penumbra:0.3; castShadow:true; shadowBias:-0.0005"></a-entity>
+
+        <!--Camera and lights-->
+        <a-entity id="camera" position="-0.5 1.6 0" camera wasd-controls look-controls>
+            <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:20; objects:.interactive;" id="cursor"></a-entity>
+            <a-box id="attachedBox" position="0 -0.8 -1" material="src: url(assets/crate/textures/lambert2_baseColor.png)" visible="false"></a-box>
         </a-entity>
-        <!-- Box Creation Plaque -->
-        <a-entity id = "earth"
-            position = "0 3.5 -6"
-            rotation = "0 0 0"
-            scale = "1 1 1 "
-            geometry = "primitive: sphere; radius: 2;"
-            material = "src: #Earth_map;"
-            shadow="cast:true; receive:true;">
+        
+
+        <!-- Import Barn -->
+        <a-entity id="barn" position="13.051 7.66827 0" scale="2 2 2" gltf-model="assets/barn/scene.gltf"></a-entity>
+
+        <!-- Import Crates -->
+        <a-entity class="crateGroup" position="-5.85565 0 -5.88365" scale="2 2 2">
+            <a-entity position="-2 0 -2" scale="0.5 0.5 0.5" gltf-model="assets/crate/scene.gltf" pickup=""></a-entity>
+            <a-entity position="-1.3 0 -2" scale="0.5 0.5 0.5" gltf-model="assets/crate/scene.gltf" pickup=""></a-entity>
+            <a-entity position="-1.6 0.8 -2" scale="0.5 0.5 0.5" gltf-model="assets/crate/scene.gltf" pickup=""></a-entity>
+        </a-entity>
+        <a-entity class="crateGroup" position="13.578 0 -5.533" scale = "2 2 2">
+            <a-entity position="-2 0 -2" scale="0.5 0.5 0.5" gltf-model="#crateModel" pickup></a-entity>
+            <a-entity position="-1.3 0 -2" scale="0.5 0.5 0.5" gltf-model="#crateModel" pickup></a-entity>
+            <a-entity position="-1.6 0.8 -2" scale="0.5 0.5 0.5" gltf-model="#crateModel" pickup></a-entity>
         </a-entity>
 
-        <a-entity id="createPlaque" position="0 0.5 -4" rotation="-30 0 0" scale="1 1 1">
+
+        <!-- Package Creation Plaque -->
+        <a-entity id="createPlaque" position="-2.67958 0.5 -4" rotation="-30 0 0" scale="1 1 1">
          
             <a-entity position="0 0.165 -0.015"
-                geometry="primitive: box; width: 3.0; height: 1.2; depth: 0.2"
+                geometry="primitive: box; width: 3.0; height: 1.3; depth: 0.2"
                 material="color: white"
                 shadow="cast:true; receive:true;"></a-entity>
         
-            <a-entity position="0.026 0.669 0.107" text="value:Box Creation;
-                color: black; font: roboto; width: 1.3; align: center; baseline:top; wrapCount:12;"></a-entity>
+            <a-entity position="0.026 0.669 0.107" text="value: Create Packages;
+                color: black; font: roboto; width: 1.3; align: center; baseline:top; wrapCount:16;"></a-entity>
         
-            <a-entity position="0.049 0.302 0.154" text="value:Press the red button to create a new box randomly placed in this room;
-                color: black; font: roboto; width: 1.25; align: center; baseline:top; wrapCount:18;"></a-entity>
+            <a-entity position="0.049 0.302 0.154" text="value:Press the red button to create a new package in the barn;
+                color: black; font: roboto; width: 1.3; align: center; baseline:top; wrapCount:18;"></a-entity>
         </a-entity>
        
-        <!-- Deletion Button Plaque -->
-        <!--To be deleted mars model-->
-        <a-entity id="mars" position="6 3.5 0" rotation="0 -90 0" scale="0.002 0.002 0.002"
-        gltf-model="#mars_model"></a-entity>
-
-
-        <a-entity id="deletePlaque" position="4 0.686 0" rotation="-30 -90 0" scale = "1 1 1">
-
-            <a-entity position = "0 0 -0.11"
-                  geometry = "primitive:box; width: 3.0; height: 1.2; depth: 0.2;"
-                  material = "color:white;">
-            </a-entity>
-
-            <a-entity position = "-0.0047 0.5 0.01" text = "value:Box Deletion; 
-                      color: black; font: roboto; width: 1.25; align: center;  baseline: top; wrapCount: 18;">
-            </a-entity>
-
-            <a-entity position = "-0.03 0.25 0.01" text = "value:Press this button to remove all created boxes; 
-                      color: black; font: roboto; width: 1.25; align: center; baseline: top; wrapCount: 18;">
-            </a-entity>
-
-        </a-entity>
-
-        <!--create box button-->
-        <a-entity id="createBox_button" position = "0 0 -1.8" >
+        <!--Package Creation Button-->
+        <a-entity id="createBox_button" position = "-2.707 0 -1.8" >
             <a-entity class="button interactive" position="0 0.6 0"
                 createboxes
                 geometry = "primitive:cylinder; radius: 0.15; height: 0.2;"
@@ -97,10 +75,27 @@
                 animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300;">
             </a-entity>
             <a-entity position="0 0.3 0" geometry="primitive:box; width:0.5; depth:0.5; height:0.6;"
-            material="color:white;"></a-entity>
+            material="color:#964B00;"></a-entity>
         </a-entity>
-        <!--delete box button-->
-        <a-entity id="deleteBox_button" position = "2.349 0 -0.114" >
+
+         <!-- Package Deletion Plaque -->
+        <a-entity id="deletePlaque" position="1.282 0.686 -4" rotation="-30 0 0" scale = "1 1 1">
+
+            <a-entity position = "0 0 -0.11"
+                  geometry = "primitive:box; width: 3.0; height: 1.2; depth: 0.2;"
+                  material = "color:white;">
+            </a-entity>
+            <a-entity position = "-0.0047 0.5 0.01" text = "value:Remove Packages; 
+                      color: black; font: roboto; width: 1.3; align: center;  baseline: top; wrapCount: 16;">
+            </a-entity>
+            <a-entity position = "-0.005 0.091 0.154" text = "value:Press the blue button to remove all existing packages; 
+                      color: black; font: roboto; width: 1.3; align: center; baseline: top; wrapCount: 18;">
+            </a-entity>
+
+        </a-entity>
+
+         <!--Package Deletion Button-->
+         <a-entity id="deleteBox_button" position = "1.446 0 -1.8" >
             <a-entity class="button interactive" position="0 0.6 0"
                 deleteboxes
                 geometry = "primitive:cylinder; radius: 0.15; height: 0.2;"
@@ -110,22 +105,20 @@
                 animation__click="property:position.y; from:0.55; to:0.6; startEvents:click; dur:300;">
             </a-entity>
             <a-entity position="0 0.3 0" geometry="primitive:box; width:0.5; depth:0.5; height:0.6;"
-            material="color:white;"></a-entity>
+            material="color:#964B00;"></a-entity>
         </a-entity>
 
-          <!-- add a room -->
-        <a-entity id = "room" shadow="cast:false; receive:true;">
-            <a-entity class = "ground" position = "0 0.08 0" rotation="-90 0 0" geometry="primitive:plane; width:26; height:26;" material = "color:white"></a-entity>
-            <a-entity id = "walls">
-                <a-entity class="wall" position="13.431 8 0" rotation="0 -90 0" geometry="primitive: box; width: 30; height: 3;" scale = "1 -5.485 1" material="color: white"></a-entity>
-                <a-entity class="wall" position="-13.506 8 0" rotation="0 90 0" geometry="primitive: box; width: 30; height: 3;" scale = "1 -5.485 1 " material="color: white"></a-entity>
-                <a-entity class="wall" position="0 8 13.427" rotation="0 180 0" geometry="primitive: box; width: 30; height: 3;" scale =" 1 -5.485 1" material="color: white"></a-entity>
-                <a-entity class="wall" position="0 8 -13.462" rotation="0 0 0" geometry="primitive: box; width: 30; height: 3;" scale = "1 -5.485 1" material="color: white"></a-entity>
-            </a-entity>     
-        </a-entity>
 
-        <!--load in environment-->
-        <a-entity environment="preset:starry"></a-entity>
-      </a-scene>
-    </body>
+         <!-- Ground -->
+        <a-entity class="ground" position="0.8188 0.08 0" 
+        rotation="-90 0 0" 
+        geometry="primitive: plane; width: 26; height: 26" 
+        material="color: white" 
+        scale="0.93802 0.85963 1"></a-entity>
+
+        <!--Scene Environment-->
+        <a-entity environment="preset:threetowers" lighting="distant"></a-entity>
+    </a-scene>
+
+</body>
 </html>
