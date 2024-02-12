@@ -27,6 +27,10 @@ AFRAME.registerComponent('pickup', {
                 this.data.intersectedEl.setAttribute('visible', 'false');
                 attachedBox.setAttribute('visible', 'true');
                 this.data.isPickedUp = true;
+
+                // On pick up, play the sound
+                var pickupSound = document.querySelector('#pickupSound');
+                pickupSound.play();
             }
         });
         
@@ -34,7 +38,7 @@ AFRAME.registerComponent('pickup', {
             if (this.data.isPickedUp) {
                 var cameraDirection = camera.object3D.getWorldDirection(new THREE.Vector3());
                 var dropPosition = cameraDirection.multiplyScalar(-1).add(camera.object3D.position);
-                dropPosition.y -= 0.8;
+                dropPosition.y -= 1;
                 this.data.intersectedEl.setAttribute('position', dropPosition);
                 this.data.intersectedEl.setAttribute('visible', 'true');
                 attachedBox.setAttribute('visible', 'false');

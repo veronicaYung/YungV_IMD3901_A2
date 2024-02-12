@@ -25,7 +25,7 @@ AFRAME.registerComponent('createboxes', {
             let x = Math.random() * 26-13; // Random number between -26 and 26
             let z = Math.random() * 26-13; 
             
-            box.setAttribute('position', `${x} 0.5 ${z}`);
+            box.setAttribute('position', `${x} 0.551 ${z}`);
             
             // Add box under a-scene as a child, helpful for deleting them
             document.querySelector('a-scene').appendChild(box);
