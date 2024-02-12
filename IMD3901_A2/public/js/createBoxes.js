@@ -11,7 +11,7 @@ AFRAME.registerComponent('createboxes', {
             
             // Create a new a-entity and set its geometry to box
             let box = document.createElement('a-box');
-            box.setAttribute('material', 'src: url(assets/hay_bale/textures/Hay_bale_baseColor.png)');
+            box.setAttribute('material', 'src: url(assets/crate/textures/lambert2_baseColor.png)');
 
             //add a tag to the boxes created, useful for deleting them
             box.classList.add('createdBox');
