@@ -27,10 +27,10 @@
 
 
         <!--Camera and lights-->
-        <a-entity id="camera" position="-0.5 1.6 0" camera wasd-controls look-controls>
+        <a-camera id="camera" position="-0.5 1.6 0" wasd-controls look-controls mobile-controls>
             <a-entity cursor="rayOrigin:mouse;" raycaster="far:20; interval:20; objects:.interactive;" id="cursor"></a-entity>
             <a-box id="attachedBox" position="0 -0.8 -1" material="src: url(assets/crate/textures/lambert2_baseColor.png)" visible="false"></a-box>
-        </a-entity>
+        </a-camera>
         
 
         <!-- Import Barn -->

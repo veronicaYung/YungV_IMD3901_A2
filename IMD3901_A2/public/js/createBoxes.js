@@ -1,24 +1,21 @@
 'use strict';
 AFRAME.registerComponent('createboxes', {
     multiple:false,
-    init:function(){ // our setup 
-        // get reference to the button
+    init:function(){ 
         const CONTEXT_AF = this;
         CONTEXT_AF.button = document.querySelector('#createBox-button');
-        // this.el or (CONTEXT_AF) refers to the element that this components is attached to
+        
         CONTEXT_AF.el.addEventListener('click', function(){
-            console.log('clicked create box button');
-            
             // Create a new a-entity and set its geometry to box
             let box = document.createElement('a-box');
             box.setAttribute('material', 'src: url(assets/crate/textures/lambert2_baseColor.png)');
 
-            //add a tag to the boxes created, useful for deleting them
+            //Add tags to the boxes created, useful for deleting/interacting with them
             box.classList.add('createdBox');
             box.classList.add('interactive');
             box.setAttribute('id', 'box');
 
-            // Add the pickup component to the box
+            // Allow these boxes to be picked up
             box.setAttribute('pickup', '');
 
             // Generate random x and z coordinates inside the floor for the box position

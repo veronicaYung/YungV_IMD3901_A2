@@ -15,5 +15,4 @@ AFRAME.registerComponent('deleteboxes', {
             boxes.forEach(box => box.parentNode.removeChild(box));
         });
     },
-    // Other methods...
 });

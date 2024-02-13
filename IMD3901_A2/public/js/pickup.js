@@ -9,18 +9,20 @@ AFRAME.registerComponent('pickup', {
     init: function () {
         var cursor = document.querySelector('#cursor');
         var camera = document.querySelector('#camera');
-        var box = document.querySelector('#box');
         var attachedBox = document.querySelector('#attachedBox');
 
+        //  Store the first intersected element
         cursor.addEventListener('raycaster-intersection', (event) => {
-            this.data.intersectedEl = event.detail.els[0]; // Store the first intersected element
+            this.data.intersectedEl = event.detail.els[0]; 
             this.data.isIntersecting = true;
         });
 
+        // Reset is intersecting when the cursor is not intersecting with anything
         cursor.addEventListener('raycaster-intersection-cleared', () => {
             this.data.isIntersecting = false;
         });
 
+        // On mouse down, if the cursor is intersecting with the box, make the box invisible and make attached box visible to the camera
         window.addEventListener('mousedown', () => {
             console.log(this.data.intersectedEl)
             if (!this.data.isPickedUp && this.data.isIntersecting && this.data.intersectedEl.id === 'box') {
@@ -34,6 +36,7 @@ AFRAME.registerComponent('pickup', {
             }
         });
         
+        // On mouse up, if the box is picked up, set the box's position to the camera's position and make the original box visible, attached box invisdible
         window.addEventListener('mouseup', () => {
             if (this.data.isPickedUp) {
                 var cameraDirection = camera.object3D.getWorldDirection(new THREE.Vector3());
